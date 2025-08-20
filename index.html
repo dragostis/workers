@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>workers</title>
+    </head>
+    <body>
+        <script src="pkg/workers.js"></script>
+        <script>
+            const { Counter, module_memory } = wasm_bindgen;
+
+            async function run() {
+                await wasm_bindgen();
+
+                const counter = new Counter();
+
+                const worker = new Worker("worker.js");
+
+                // Send WebAssembly.Module, WebAssembly.Memory, and Counter's
+                // pointer across Worker boundary.
+                worker.postMessage([module_memory(), counter.into_raw()]);
+
+                console.log(counter.incr());
+            }
+
+            run();
+        </script>
+    </body>
+</html>
